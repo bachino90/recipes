@@ -26,6 +26,10 @@ extension SectionProtocol {
 
 class Section {
 
+    weak var actionDelegate: ActionDelegate? {
+        didSet { rows.map { $0.actionDelegate = self.actionDelegate } }
+    }
+
     // MARK: - Rows
 
     var rows = [Row]()

@@ -8,13 +8,18 @@
 
 import UIKit
 
-class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SectionsViewController: UIViewController, ActionDelegate, UITableViewDelegate, UITableViewDataSource {
 
     // MARK: — Public Interface
 
     @IBOutlet weak var tableView: UITableView!
 
-    var sections = [Section]() { didSet { reloadData() } }
+    var sections = [Section]() {
+        didSet {
+            sections.map { $0.actionDelegate = self }
+            reloadData()
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

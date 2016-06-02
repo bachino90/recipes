@@ -21,3 +21,11 @@ class RecipeSectionsViewController: SectionsViewController {
         sections = [RecipesSection(recipes: recipes)]
     }
 }
+
+extension RecipeSectionsViewController: RecipeActionDelegate {
+
+    func actionDidRequestToOpenRecipe(recipe: Recipe) {
+        let vc = RecipeDetailsViewController(recipe: recipe)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+}

@@ -13,6 +13,10 @@ struct Recipe {
     var ingredients: [Ingredient]
 }
 
+protocol RecipeActionDelegate: ActionDelegate {
+    func actionDidRequestToOpenRecipe(recipe: Recipe)
+}
+
 class RecipeRow: Row {
 
     var recipe: Recipe
@@ -29,6 +33,14 @@ class RecipeRow: Row {
         if let cell = cell as? RecipeCell {
             cell.configureForRecipe(recipe)
         }
+    }
+
+    override func performAction() {
+        delegate?.actionDidRequestToOpenRecipe(recipe)
+    }
+
+    private var delegate: RecipeActionDelegate? {
+        return actionDelegate as? RecipeActionDelegate
     }
 }
 

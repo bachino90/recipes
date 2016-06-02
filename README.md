@@ -201,7 +201,7 @@ class Row {
 
 Explicar los actionDelegates
 
-Por último, para poder diferenciar las acciones que pueden ejecutar las distintas Celdas, decidimos delegar la responsabilidad a un delegado de la Celda. Entonces cada una tendrá un delegado (actionDelegate). Definimos un protocolo padre ActionDelegate, del cual deberán heredar los protocolos de las disintas celdas.
+Por último, para poder diferenciar las acciones que pueden ejecutar las distintas Celdas, decidimos delegar la responsabilidad a un delegado de la Celda. Definimos un protocolo padre ActionDelegate, del cual deberán heredar los protocolos de las disintas celdas y agregamos el delegate a las Celdas.
 ```javascript
 protocol ActionDelegate: class { }
 
@@ -210,8 +210,38 @@ class Row {
     ...
 }
 
+class Section {
+    weak var actionDelegate: ActionDelegate? {
+        didSet { rows.map { $0.actionDelegate = self.actionDelegate } }
+    }
+    ...
+}
 ```  
+De este modo cada SectionsViewController va a ser el delegado de las Celdas que muestra, por lo que debe implementar los metodos de los protocolos. En el ejemplo del RecipesSectionsViewController, los
+```javascript
+protocol RecipeActionDelegate: ActionDelegate {
+    func actionDidRequestToOpenRecipe(recipe: Recipe)
+}
 
+class Row {
+  ...
+  override func performAction() {
+      delegate?.actionDidRequestToOpenRecipe(recipe)
+  }
+
+  private var delegate: RecipeActionDelegate? {
+      return actionDelegate as? RecipeActionDelegate
+  }
+}
+
+extension RecipeSectionsViewController: RecipeActionDelegate {
+
+    func actionDidRequestToOpenRecipe(recipe: Recipe) {
+        let vc = RecipeDetailsViewController(recipe: recipe)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+}
+```
 ---
 
 StateViewController

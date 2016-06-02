@@ -18,6 +18,7 @@
 		388521731D008B600095F2AC /* RecipeSectionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388521721D008B600095F2AC /* RecipeSectionsViewController.swift */; };
 		388521771D008C9D0095F2AC /* IngredientCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388521761D008C9D0095F2AC /* IngredientCell.swift */; };
 		388521791D008DEA0095F2AC /* RecipesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388521781D008DEA0095F2AC /* RecipesSection.swift */; };
+		3885217B1D00C37F0095F2AC /* RecipeDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3885217A1D00C37F0095F2AC /* RecipeDetailsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		388521721D008B600095F2AC /* RecipeSectionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeSectionsViewController.swift; sourceTree = "<group>"; };
 		388521761D008C9D0095F2AC /* IngredientCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IngredientCell.swift; sourceTree = "<group>"; };
 		388521781D008DEA0095F2AC /* RecipesSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesSection.swift; sourceTree = "<group>"; };
+		3885217A1D00C37F0095F2AC /* RecipeDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeDetailsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 			children = (
 				388521571D0086DD0095F2AC /* AppDelegate.swift */,
 				388521721D008B600095F2AC /* RecipeSectionsViewController.swift */,
+				3885217A1D00C37F0095F2AC /* RecipeDetailsViewController.swift */,
 				388521781D008DEA0095F2AC /* RecipesSection.swift */,
 				388521701D008B530095F2AC /* RecipeCell.swift */,
 				388521761D008C9D0095F2AC /* IngredientCell.swift */,
@@ -167,6 +170,7 @@
 				3885216A1D0086E80095F2AC /* SectionsViewController.swift in Sources */,
 				3885216E1D0086F20095F2AC /* Row.swift in Sources */,
 				388521731D008B600095F2AC /* RecipeSectionsViewController.swift in Sources */,
+				3885217B1D00C37F0095F2AC /* RecipeDetailsViewController.swift in Sources */,
 				388521791D008DEA0095F2AC /* RecipesSection.swift in Sources */,
 				388521581D0086DD0095F2AC /* AppDelegate.swift in Sources */,
 			);
@@ -318,6 +322,7 @@
 				388521681D0086DD0095F2AC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
