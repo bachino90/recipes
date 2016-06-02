@@ -81,5 +81,10 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
         let section = sections[section]
         return section.headerHeight
     }
-    
+
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        let row = rowForIndexPath(indexPath)
+        row.performAction()
+    }
 }

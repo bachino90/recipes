@@ -17,7 +17,7 @@ This is one iteration in many of which we are working, it is not our final appro
 
 We create a first UIViewController with a table view which implements the main methods of both protocols (Don’t pay attention to the name of the view controller now, later it will be clear)
 
-```javascript
+```swift
 class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   @IBOutlet weak var tableView: UITableView!
@@ -46,7 +46,7 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
 ```
 This code is not going to work but we are going to filled in a minute.
 
-We wanted to make this view controller support all type of table view so we need a model who represents an array of section in the table view. It also needs to have an array of objects that represents the rows of each one and its header. We call this object Section.
+We wanted to make this view controller support all type of table view so we needed a model who represents an array of section in the table view. It also needed to have an array of objects that represents the rows of each one and its header. We called this object Section.
 ```javascript
 class Section {
 
@@ -158,7 +158,7 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
 ```
 We needed to declare a couple of auxiliary methods, one to find a Row from an indexPath and another to get the indexPath of a Row.
 
-In the project "adjunto" below you can see an example of this implementation. The RecipesSectionsViewController looks like this
+In [the example project](https://github.com/bachino90/recipes) you can see an example of this implementation. The RecipesSectionsViewController looks like this:
 ```javascript
 class RecipeSectionsViewController: SectionsViewController {
 
@@ -174,26 +174,30 @@ class RecipeSectionsViewController: SectionsViewController {
     }
 }
 ```
-We just have to subclass the SectionsViewController, connect the tableView IBOutlet to a UITableView in a .xib, register the cells and set the sections you want to show.
+We just have to subclass the SectionsViewController, connect the tableView to a UITableView in a .xib, register the cells and set the sections you want to show.
 
-You can see the implementation of the RecipeSection and RecipeRow in the project.
+You can see the entire implementation of the RecipeSection and RecipeRow in the project.
 
 ## Make the row actionable
 
-For now it is fine but the SectionsViewController not implements didSelectRowAtIndexPath. We are going to delegate this to the Row object:
+For now it's fine but the rows are not clickable because we did not implement the didSelectRowAtIndexPath method. We are going to delegate this to the Row object, so every time the didSelectRowAtIndexPath is called, the performAction method for the row is called:
 
 PerformAction
 ```javascript
-class Row {
-
-...
-
-fun performAction() {
-
+class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+  ...
+  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        let row = rowForIndexPath(indexPath)
+        row.performAction()
+    }
+  ...
 }
 
-...
-
+class Row {
+  ...
+  fun performAction() { fatalError("notImplemented")  }
+  ...
 }
 ```
 Insiste the PerformAction method, a delegate from the Row will call a method, so the implementation of the action must rely on the delegate of the Row. The responsable of know what to do when user clicks on a Row is the view controller:
