@@ -20,7 +20,11 @@ extension RowProtocol {
     func performAction() { }
 }
 
+protocol ActionDelegate: class { }
+
 class Row {
+
+    weak var actionDelegate: ActionDelegate?
 
     var cellIdentifier: String { get { fatalError("notImplemented") } }
 

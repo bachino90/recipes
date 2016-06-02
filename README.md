@@ -1,4 +1,4 @@
-# Going from M(massive)VC to M(minimum)VC
+# Going from M(massive)VC to M(minimum)VC - Part one
 
 <!-- Almost all view controllers in iOS use TableViews
 Problem with common MVC, how it transforms in Massive VC, and are untestable -->
@@ -17,7 +17,7 @@ This is one iteration in many of which we are working, it is not our final appro
 
 We create a first UIViewController with a table view which implements the main methods of both protocols (Don’t pay attention to the name of the view controller now, later it will be clear)
 
-```swift
+```javascript
 class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   @IBOutlet weak var tableView: UITableView!
@@ -102,8 +102,7 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     func indexPathForRow(aRow: Row) -> NSIndexPath? {
-        var sectionIndex = -1
-        var rowIndex = -1
+        var sectionIndex = -1, rowIndex = -1
         for section in sections {
             sectionIndex += 1
             for row in section.rows {
@@ -182,7 +181,6 @@ You can see the entire implementation of the RecipeSection and RecipeRow in the 
 
 For now it's fine but the rows are not clickable because we did not implement the didSelectRowAtIndexPath method. We are going to delegate this to the Row object, so every time the didSelectRowAtIndexPath is called, the performAction method for the row is called:
 
-PerformAction
 ```javascript
 class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   ...
@@ -200,25 +198,21 @@ class Row {
   ...
 }
 ```
-Insiste the PerformAction method, a delegate from the Row will call a method, so the implementation of the action must rely on the delegate of the Row. The responsable of know what to do when user clicks on a Row is the view controller:
-
-
-
-
-Codigo del view controller con él action delegate
-
-
-
-
-
-
-
-Mostrar un ejemplo simple
 
 Explicar los actionDelegates
 
+Por último, para poder diferenciar las acciones que pueden ejecutar las distintas Celdas, decidimos delegar la responsabilidad a un delegado de la Celda. Entonces cada una tendrá un delegado (actionDelegate). Definimos un protocolo padre ActionDelegate, del cual deberán heredar los protocolos de las disintas celdas.
+```javascript
+protocol ActionDelegate: class { }
 
+class Row {
+    weak var actionDelegate: ActionDelegate?
+    ...
+}
 
+```  
+
+---
 
 StateViewController
 
@@ -230,7 +224,6 @@ Loading
 Success with data
 Empty
 Error
-
 
 
   <!-- — Start with SectionActionsViewController

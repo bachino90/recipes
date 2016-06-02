@@ -30,8 +30,7 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     func indexPathForRow(aRow: Row) -> NSIndexPath? {
-        var sectionIndex = -1
-        var rowIndex = -1
+        var sectionIndex = -1, rowIndex = -1
         for section in sections {
             sectionIndex += 1
             for row in section.rows {
