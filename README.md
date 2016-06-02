@@ -254,15 +254,3 @@ Loading
 Success with data
 Empty
 Error -->
-
-
-  <!-- — Start with SectionActionsViewController
-
-Start with SectionActionsViewController, without Actions
-Explain Actions and SectionActions — 
-
- — Start with StateViewController
-
-Explain all general state that a view controller with table view could have (Empty, Loading, Initial, Error, Success)
-Put out all the networks calls and business logic from VC and move it to a View Model
-Now the View Model is responsible for settings the state of the view controller -->
