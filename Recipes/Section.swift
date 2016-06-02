@@ -6,4 +6,20 @@
 //  Copyright © 2016 Restorando. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class Section {
+
+    // MARK: - Rows
+
+    var rows = [Row]()
+
+    // MARK: - Header
+
+    var headerHeight: CGFloat { return 0.01 }
+
+    var headerCellIdentifier: String? { return nil }
+
+    func configureHeader(cell: UITableViewCell) { }
+    
+}

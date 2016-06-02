@@ -1,0 +1,241 @@
+# Going from M(massive)VC to M(minimum)VC
+
+<!-- Almost all view controllers in iOS use TableViews
+Problem with common MVC, how it transforms in Massive VC, and are untestable -->
+
+All who start developing iOS apps, begins with MVC, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realized that code is a mess, untestable, and unscalable
+
+<!-- Where is the problem? (In the UITableViewDelegate and UITableViewDataSource, and all logic from model and network requests) -->
+
+It is imposible to include all type of view controller, but one of the most common is the table view controller. So we are going to focus on it.
+
+When you develop any application is highly probable that you have to use more than one view controller with a table view, so you have to write a couple of table view delegate and data source repeating the same logic all the time. That’s why we first tried to find a way to write those delegate only once for all the table views in our project. 
+
+This is one iteration in many of which we are working, it is not our final approach.
+
+## SectionsViewController
+
+We create a first UIViewController with a table view which implements the main methods of both protocols (Don’t pay attention to the name of the view controller now, later it will be clear)
+
+```javascript
+class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
+  @IBOutlet weak var tableView: UITableView!
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    tableView.delegate = self
+    tableView.dataSource = self
+  }
+
+  // MARK: — UITableViewDelegate & UITableViewDataSource
+
+  func numberOfSectionsInTableView(tableView: UITableView) -> Int {}
+
+  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {}
+
+  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {}
+
+  func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {}
+
+  func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {}
+
+  func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {}
+
+}
+```
+This code is not going to work but we are going to filled in a minute.
+
+We wanted to make this view controller support all type of table view so we need a model who represents an array of section in the table view. It also needs to have an array of objects that represents the rows of each one and its header. We call this object Section.
+```javascript
+class Section {
+
+  // MARK: - Rows  
+
+  var rows = [Row]()
+
+  // MARK: - Header
+
+  var headerHeight: CGFloat { return 0.01 }
+
+  var headerCellIdentifier: String? { return nil }
+
+  func configureHeader(cell: UITableViewCell) { }
+
+}
+```
+As we can see, Section contains all the rows in one of its properties and the others properties and methods are use to configure the header of the section. To complete this section we need the Row, and that object needs to know how to configure it self.
+```javascript
+class Row {
+
+   var cellIdentifier: String { get { fatalError("notImplemented") } }
+
+   var cellHeight: CGFloat { get { fatalError("notImplemented") } }
+
+   func configureCell(cell: UIView) { fatalError("notImplemented") }
+
+}
+```
+So the class Row knows which cell represent it self and how to configure it.
+
+Now we can complete the UITableViewDelegate and UITableViewDataSource.
+```javascript
+class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
+    // MARK: — Public Interface
+
+    @IBOutlet weak var tableView: UITableView!
+
+    var sections = [Section]() { didSet { reloadData() } }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
+
+    func reloadData() { tableView.reloadData() }
+
+    func rowForIndexPath(indexPath: NSIndexPath) -> Row {
+        let section = sections[indexPath.section]
+        return section.rows[indexPath.row]
+    }
+
+    func indexPathForRow(aRow: Row) -> NSIndexPath? {
+        var sectionIndex = -1
+        var rowIndex = -1
+        for section in sections {
+            sectionIndex += 1
+            for row in section.rows {
+                rowIndex += 1
+                if row === aRow { return NSIndexPath(forRow: rowIndex, inSection: sectionIndex) }
+            }
+            rowIndex = -1
+        }
+        return nil
+    }
+
+    // MARK: — UITableViewDelegate & UITableViewDataSource
+
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int { return sections.count }
+
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let section = sections[section]
+        return section.rows.count
+    }
+
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let row = rowForIndexPath(indexPath)
+        if let cell = tableView.dequeueReusableCellWithIdentifier(row.cellIdentifier) {
+            row.configureCell(cell)
+            return cell
+        } else {
+            return UITableViewCell()
+        }
+    }
+
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        let row = rowForIndexPath(indexPath)
+        return row.cellHeight
+    }
+
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let section = sections[section]
+        if let headerIdentifier = section.headerCellIdentifier {
+            let cell = tableView.dequeueReusableCellWithIdentifier(headerIdentifier)!
+            section.configureHeader(cell)
+            return cell
+        }
+        return nil
+    }
+
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let section = sections[section]
+        return section.headerHeight
+    }
+
+}
+```
+We needed to declare a couple of auxiliary methods, one to find a Row from an indexPath and another to get the indexPath of a Row.
+
+In the project "adjunto" below you can see an example of this implementation. The RecipesSectionsViewController looks like this
+```javascript
+class RecipeSectionsViewController: SectionsViewController {
+
+    var recipes = [Recipe(name: "Empanada", ingredients: []), Recipe(name: "Pastel de carne", ingredients: [])]
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        tableView.registerClass(RecipeCell.self, forCellReuseIdentifier: "RecipeCell")
+        tableView.registerClass(RecipesHeaderCell.self, forCellReuseIdentifier: "RecipesHeaderCell")
+
+        sections = [RecipesSection(recipes: recipes)]
+    }
+}
+```
+We just have to subclass the SectionsViewController, connect the tableView IBOutlet to a UITableView in a .xib, register the cells and set the sections you want to show.
+
+You can see the implementation of the RecipeSection and RecipeRow in the project.
+
+## Make the row actionable
+
+For now it is fine but the SectionsViewController not implements didSelectRowAtIndexPath. We are going to delegate this to the Row object:
+
+PerformAction
+```javascript
+class Row {
+
+...
+
+fun performAction() {
+
+}
+
+...
+
+}
+```
+Insiste the PerformAction method, a delegate from the Row will call a method, so the implementation of the action must rely on the delegate of the Row. The responsable of know what to do when user clicks on a Row is the view controller:
+
+
+
+
+Codigo del view controller con él action delegate
+
+
+
+
+
+
+
+Mostrar un ejemplo simple
+
+Explicar los actionDelegates
+
+
+
+
+StateViewController
+
+To go further with the refactor, We are going to deal with all the busness logic and the networks requests in a view model. But first se are going to think in the sectionsviewcontroller a little moré. Generally a table view controller show a list of object that you retrueve from a API, so when the view controller is loaded, you start the request and mean exile you show a loading view un tío the request finish, then maybe you apply soñé business logic to present that data y show it. It is posible that the request returns empty data or occurs some error with it
+
+In that flow we can recognize a couple of states that the view controller may have:
+
+Loading
+Success with data
+Empty
+Error
+
+
+
+  <!-- — Start with SectionActionsViewController
+
+Start with SectionActionsViewController, without Actions
+Explain Actions and SectionActions — 
+
+ — Start with StateViewController
+
+Explain all general state that a view controller with table view could have (Empty, Loading, Initial, Error, Success)
+Put out all the networks calls and business logic from VC and move it to a View Model
+Now the View Model is responsible for settings the state of the view controller -->

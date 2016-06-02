@@ -6,4 +6,14 @@
 //  Copyright © 2016 Restorando. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class Row {
+
+    var cellIdentifier: String { get { fatalError("notImplemented") } }
+
+    var cellHeight: CGFloat { get { fatalError("notImplemented") } }
+
+    func configureCell(cell: UIView) { fatalError("notImplemented") }
+    
+}
