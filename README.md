@@ -3,19 +3,22 @@
 <!-- Almost all view controllers in iOS use TableViews
 Problem with common MVC, how it transforms in Massive VC, and are untestable -->
 
-All who start developing iOS apps, begins with MVC, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realized that code is a mess, untestable, and unscalable
+All who start developing iOS apps, begins with MVC, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realized that code is a mess, untestable, and unscalable _why?_
+
 
 <!-- Where is the problem? (In the UITableViewDelegate and UITableViewDataSource, and all logic from model and network requests) -->
 
-It is imposible to include all type of view controller, but one of the most common is the table view controller. So we are going to focus on it.
+It is imposible to include all type of view controllers, but one of the most common is the table view controller. _can you name some examples to justify this?_ So we are going to focus on it.
 
-When you develop any application is highly probable that you have to use more than one view controller with a table view, so you have to write a couple of table view delegate and data source repeating the same logic all the time. That’s why we first tried to find a way to write those delegate only once for all the table views in our project. 
 
-This is one iteration in many of which we are working, it is not our final approach.
+
+When you develop any application is highly probable that you have to use more than one view controller with a table view, so you have to write a couple of table view delegate and data source repeating the same logic all the time. That’s why we first tried to find a way to write those delegates only once for all the table views in our project. 
+
+This is one iteration in many of which we are working, it is not our final approach. _...then, why are you writing about this? can you preview a little as an introduction to what can be gained with this approach?_
 
 ## SectionsViewController
 
-We create a first UIViewController with a table view which implements the main methods of both protocols (Don’t pay attention to the name of the view controller now, later it will be clear)
+We create a first UIViewController with a table view which implements the main methods of both protocols _both which ones?_ (Don’t pay attention to the name of the view controller now, later it will be clear)
 
 ```javascript
 class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -46,17 +49,18 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
 ```
 This code is not going to work but we are going to filled in a minute.
 
-We wanted to make this view controller support all type of table view so we needed a model who represents an array of section in the table view. It also needed to have an array of objects that represents the rows of each one and its header. We called this object Section.
+We wanted to make this view controller support all type of table views so we needed a model who represents an array of section in the table view. It is also needed to have an array of objects that represents the rows of each one and its header. We called this object Section. _name the reusage purposes here?_
+
 ```javascript
 class Section {
 
-  // MARK: - Rows  
+  // MARK: - Rows
 
   var rows = [Row]()
 
   // MARK: - Header
 
-  var headerHeight: CGFloat { return 0.01 }
+  var headerHeight: CGFloat { return 0.01 } _why is this needed?_
 
   var headerCellIdentifier: String? { return nil }
 
@@ -66,7 +70,7 @@ class Section {
 ```
 As we can see, Section contains all the rows in one of its properties and the others properties and methods are use to configure the header of the section. To complete this section we need the Row, and that object needs to know how to configure it self.
 ```javascript
-class Row {
+class Row {  _why can't Row be a protocol as well instead of a runtime-breaker "abstract" class?_
 
    var cellIdentifier: String { get { fatalError("notImplemented") } }
 
@@ -194,7 +198,7 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
 
 class Row {
   ...
-  fun performAction() { fatalError("notImplemented")  }
+  func performAction() { fatalError("notImplemented")  }
   ...
 }
 ```
@@ -216,7 +220,7 @@ class Section {
     }
     ...
 }
-```  
+```
 De este modo cada SectionsViewController va a ser el delegado de las Celdas que muestra, por lo que debe implementar los metodos de los protocolos. En el ejemplo del RecipesSectionsViewController, los
 ```javascript
 protocol RecipeActionDelegate: ActionDelegate {
