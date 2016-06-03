@@ -1,6 +1,6 @@
 # Going from M(massive)VC to M(minimum)VC - Part one
 
-All who start developing iOS apps, begins with MVC, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realized that code is a mess (a bunch of code in a single file), untestable (Have you ever try to test a view controller with it lifecycle and dependencies? in the part two of the article we talk about this), and unscalable (Have you ever try to add a different kind of UITableViewCell to an exsisting UITableViewDataSource?)
+All who start developing iOS apps, begins with MVC, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realized that code is a mess (a bunch of code with different purpose in a single file), untestable (Have you ever try to test a view controller with it lifecycle and dependencies? in the part two of the article we talk about this), and unscalable (Have you ever try to add a different kind of UITableViewCell to an existing UITableViewDataSource?)
 
 It is imposible to include all type of view controller, but one of the most common is the table view controller _can you name some examples to justify this?_. So we are going to focus on it.
 
@@ -175,7 +175,7 @@ You can see the entire implementation of the RecipeSection and RecipeRow in the 
 
 ## Make the row actionable
 
-For now it's fine but the rows are not clickable because we did not implement the didSelectRowAtIndexPath method. We are going to delegate this to the Row object, so every time the didSelectRowAtIndexPath is called, the performAction method for the row is called:
+For now it's fine but the rows are not clickable because we did not implement the didSelectRowAtIndexPath method. But we wanted to make the didSelectRowAtIndexPath method a generic one. So we delegate the action to the Row:
 
 ```javascript
 class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -194,10 +194,9 @@ class Row {
   ...
 }
 ```
+But how can we communicate the action that the view controller has to perform?, maybe open a modal, show an alert view or make a push in a navigationController. For example, in our Recipes project if any tap the recipe cell we want to make a push to a new view controller which details all the ingredients of the recipe.
 
-Explicar los actionDelegates
-
-Por último, para poder diferenciar las acciones que pueden ejecutar las distintas Celdas, decidimos delegar la responsabilidad a un delegado de la Celda. Definimos un protocolo padre ActionDelegate, del cual deberán heredar los protocolos de las disintas celdas y agregamos el delegate a las Celdas.
+So we have to add a delegate in the Row and Section models, which is going to be set when the sections property in the SectionsViewController is set. We called this delegate, actionDelegate. When the actionDelegate of a Section is set, it iterates over the rows to set the actionDelegate of each one. We also define an abstract protocol called ActionDelegate, from which all the Row's protocol must inherit:
 ```javascript
 protocol ActionDelegate: class { }
 
@@ -213,7 +212,16 @@ class Section {
     ...
 }
 ```  
-De este modo cada SectionsViewController va a ser el delegado de las Celdas que muestra, por lo que debe implementar los metodos de los protocolos. En el ejemplo del RecipesSectionsViewController, los
+Ultimately, we have to extend your SectionsViewController with the method declare int the Row's protocol. In the Recipes example:
+```javascript
+extension RecipeSectionsViewController: RecipeActionDelegate {
+  func actionDidRequestToOpenRecipe(recipe: Recipe) {
+      let vc = RecipeDetailsViewController(recipe: recipe)
+      navigationController?.pushViewController(vc, animated: true)
+  }
+}
+```
+In our Recipe project we had to declare one more property in the RecipeRow, the delegate, which cast the actionDelegate to the correct subclass of the ActionDelegate protocol, RecipeActionDelegate:
 ```javascript
 protocol RecipeActionDelegate: ActionDelegate {
     func actionDidRequestToOpenRecipe(recipe: Recipe)
@@ -228,14 +236,6 @@ class Row {
   private var delegate: RecipeActionDelegate? {
       return actionDelegate as? RecipeActionDelegate
   }
-}
-
-extension RecipeSectionsViewController: RecipeActionDelegate {
-
-    func actionDidRequestToOpenRecipe(recipe: Recipe) {
-        let vc = RecipeDetailsViewController(recipe: recipe)
-        navigationController?.pushViewController(vc, animated: true)
-    }
 }
 ```
 ---
