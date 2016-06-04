@@ -39,7 +39,7 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
 
 }
 ```
-This code is not going to work but we are going to filled in a minute.
+This code is not going to work but we are going to complete it in a minute.
 
 We wanted to make this view controller support all type of table view so we needed a model who represents an array of section in the table view. It also needed to have an array of objects that represents the rows of each one and its header. We called this object Section. So you can subclass the Section to represent different kinds of sections of row.
 ```javascript
@@ -60,7 +60,6 @@ class Section {
 }
 ```
 As we can see, Section contains all the rows in one of its properties and the others properties and methods are use to configure the header of the section. To complete this section we need the Row, and that object needs to know how to configure it self.
- _why can't Row be a protocol as well instead of a runtime-breaker "abstract" class?_
 ```javascript
 class Row {
 
