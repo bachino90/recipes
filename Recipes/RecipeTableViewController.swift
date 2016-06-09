@@ -26,6 +26,8 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.registerClass(RecipesHeaderCell.self, forCellReuseIdentifier: "RecipesHeaderCell")
         tableView.delegate = self
         tableView.dataSource = self
+
+        recipes = [Data.recipes]
     }
 
     // MARK: — UITableViewDelegate & UITableViewDataSource
@@ -51,7 +53,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
 
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = recipes[section]
-        let cell = tableView.dequeueReusableCellWithIdentifier("RecipeHeaderCell") as! RecipesHeaderCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("RecipesHeaderCell") as! RecipesHeaderCell
         cell.configureForType(section.first!.type)
         return cell
     }
@@ -64,7 +66,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let section = recipes[indexPath.section]
         let recipe = section[indexPath.row]
-        let vc = RecipeDetailsSectionsViewController(recipe: recipe)
+        let vc = RecipeDetailsTableViewController(recipe: recipe)
         navigationController?.pushViewController(vc, animated: true)
     }
 

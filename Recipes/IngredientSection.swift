@@ -23,9 +23,4 @@ class IngredientSection: Section {
 class IngredientsHeaderCell: UITableViewCell {
 
     class func cellHeight() -> CGFloat { return 50.0 }
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        textLabel?.text = "Ingredients"
-    }
 }

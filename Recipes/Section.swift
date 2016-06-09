@@ -36,7 +36,7 @@ class Section {
 
     // MARK: - Header
 
-    var headerHeight: CGFloat { return 0.01 }
+    var headerHeight: CGFloat? { return nil }
 
     var headerCellIdentifier: String? { return nil }
 

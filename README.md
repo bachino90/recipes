@@ -8,7 +8,7 @@ It is imposible to include all type of view controller, but one of the most comm
 
 When you develop any application is highly probable that you have to use more than one view controller with a table view, so you have to write a couple of table view delegate and data source repeating the same logic all the time.
 
-In our example we wanted to create a list of recipes sorted by kind of meal ("Entrada", "Plato principal", "Postre"), and when you selected one it going to show you the ingredients and how to prepare it. So we need two view controllers with tables views, one for the list of recipes and another for de recipe details. If we followed our first learnings of developing app with MVC, the methods of de UITableViewDataSource start to get verbosely, like the RecipeDetailsTableViewController:
+In our example we wanted to create a list of recipes sorted by kind of meal ("Entrada", "Plato principal", Dessert), and when you selected one it going to show you the ingredients and how to prepare it. So we need two view controllers with tables views, one for the list of recipes and another for de recipe details. If we followed our first learnings of developing app with MVC, the methods of de UITableViewDataSource start to get verbosely, like the RecipeDetailsTableViewController:
 ```javascript
 func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if indexPath.section == 0 {
@@ -76,7 +76,7 @@ class Section {
 
   // MARK: - Header
 
-  var headerHeight: CGFloat { return 0.01 }  _why is this needed?_
+  var headerHeight: CGFloat? { return nil }
 
   var headerCellIdentifier: String? { return nil }
 
@@ -170,7 +170,7 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
 
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let section = sections[section]
-        return section.headerHeight
+        return section.headerHeight ?? 0.01 //If it's nil, should not be displayed
     }
 
 }

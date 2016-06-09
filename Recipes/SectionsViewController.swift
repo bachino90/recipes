@@ -87,7 +87,7 @@ class SectionsViewController: UIViewController, ActionDelegate, UITableViewDeleg
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let section = sections[section]
-        return section.headerHeight
+        return section.headerHeight ?? 0.01 //If it's nil, should not be displayed
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

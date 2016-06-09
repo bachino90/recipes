@@ -24,6 +24,9 @@ class RecipeDetailsTableViewController: UIViewController, UITableViewDataSource,
     override func viewDidLoad() {
         super.viewDidLoad()
         title = recipe.name
+        tableView.registerClass(IngredientsHeaderCell.self, forCellReuseIdentifier: "IngredientsHeaderCell")
+        tableView.registerClass(IngredientCell.self, forCellReuseIdentifier: "IngredientCell")
+        tableView.registerClass(DescriptionCell.self, forCellReuseIdentifier: "DescriptionCell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.reloadData()
