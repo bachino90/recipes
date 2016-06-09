@@ -231,7 +231,18 @@ class Row {
 
 class Section {
     weak var actionDelegate: ActionDelegate? {
-        didSet { rows.map { $0.actionDelegate = self.actionDelegate } }
+        didSet { for row in rows { row.actionDelegate = self.actionDelegate } }
+    }
+    ...
+}
+
+class SectionsViewController: UIViewController, ActionDelegate, UITableViewDelegate, UITableViewDataSource {
+    ...
+    var sections = [Section]() {
+        didSet {
+            for section in sections { section.actionDelegate = self }
+            reloadData()
+        }
     }
     ...
 }
