@@ -40,27 +40,27 @@ So we create a UIViewController with a table view which implements the main meth
 ```javascript
 class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-  @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableView: UITableView!
 
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    tableView.delegate = self
-    tableView.dataSource = self
-  }
+    override func viewDidLoad() {
+      super.viewDidLoad()
+      tableView.delegate = self
+      tableView.dataSource = self
+    }
 
-  // MARK: — UITableViewDelegate & UITableViewDataSource
+    // MARK: — UITableViewDelegate & UITableViewDataSource
 
-  func numberOfSectionsInTableView(tableView: UITableView) -> Int {}
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {}
 
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {}
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {}
 
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {}
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {}
 
-  func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {}
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {}
 
-  func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {}
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {}
 
-  func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {}
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {}
 
 }
 ```
@@ -70,17 +70,17 @@ We wanted to make this view controller support all type of table view so we need
 ```javascript
 class Section {
 
-  // MARK: - Rows  
+    // MARK: - Rows  
 
-  var rows = [Row]()
+    var rows = [Row]()
 
-  // MARK: - Header
+    // MARK: - Header
 
-  var headerHeight: CGFloat? { return nil }
+    var headerHeight: CGFloat? { return nil }
 
-  var headerCellIdentifier: String? { return nil }
+    var headerCellIdentifier: String? { return nil }
 
-  func configureHeader(cell: UITableViewCell) { }
+    func configureHeader(cell: UITableViewCell) { }
 
 }
 ```
@@ -203,19 +203,19 @@ For now it's fine but the rows are not clickable because we did not implement th
 
 ```javascript
 class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-  ...
-  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        let row = rowForIndexPath(indexPath)
-        row.performAction()
+    ...
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+      tableView.deselectRowAtIndexPath(indexPath, animated: true)
+      let row = rowForIndexPath(indexPath)
+      row.performAction()
     }
-  ...
+    ...
 }
 
 class Row {
-  ...
-  func performAction() { fatalError("notImplemented")  }
-  ...
+    ...
+    func performAction() { fatalError("notImplemented")  }
+    ...
 }
 ```
 But how can we communicate the action that the view controller has to perform?, maybe open a modal, show an alert view or make a push in a navigationController. For example, in our Recipes project if any tap the recipe cell we want to make a push to a new view controller which details all the ingredients of the recipe.
@@ -250,10 +250,10 @@ class SectionsViewController: UIViewController, ActionDelegate, UITableViewDeleg
 Ultimately, we have to extend your SectionsViewController with the method declare int the Row's protocol. In the Recipes example:
 ```javascript
 extension RecipeSectionsViewController: RecipeActionDelegate {
-  func actionDidRequestToOpenRecipe(recipe: Recipe) {
-      let vc = RecipeDetailsViewController(recipe: recipe)
-      navigationController?.pushViewController(vc, animated: true)
-  }
+    func actionDidRequestToOpenRecipe(recipe: Recipe) {
+        let vc = RecipeDetailsViewController(recipe: recipe)
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 ```
 In our Recipe project we had to declare one more property in the RecipeRow, the delegate, which cast the actionDelegate to the correct subclass of the ActionDelegate protocol, RecipeActionDelegate:
@@ -263,13 +263,13 @@ protocol RecipeActionDelegate: ActionDelegate {
 }
 
 class Row {
-  ...
-  override func performAction() {
-      delegate?.actionDidRequestToOpenRecipe(recipe)
-  }
+    ...
+    override func performAction() {
+        delegate?.actionDidRequestToOpenRecipe(recipe)
+    }
 
-  private var delegate: RecipeActionDelegate? {
-      return actionDelegate as? RecipeActionDelegate
-  }
+    private var delegate: RecipeActionDelegate? {
+        return actionDelegate as? RecipeActionDelegate
+    }
 }
 ```
