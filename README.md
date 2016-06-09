@@ -2,16 +2,41 @@
 
 All who start developing iOS apps, begins with MVC, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realized that code is a mess (a bunch of code with different purpose in a single file), untestable (Have you ever try to test a view controller with it lifecycle and dependencies? in the part two of the article we talk about this), and unscalable (Have you ever try to add a different kind of UITableViewCell to an existing UITableViewDataSource?)
 
-It is imposible to include all type of view controller, but one of the most common is the table view controller _can you name some examples to justify this?_. So we are going to focus on it.
-
-When you develop any application is highly probable that you have to use more than one view controller with a table view, so you have to write a couple of table view delegate and data source repeating the same logic all the time. That’s why we first tried to find a way to write those delegates only once for all the table views in our project, because when you follow the DRY principle it is easier to find bugs and to scale the application.
-
-This is one iteration in many of which we are working, it is not our final approach.  _...then, why are you writing about this? can you preview a little as an introduction to what can be gained with this approach?_
+It is imposible to include all type of view controller, but one of the most common is the table view controller where you can list anything. So we are going to focus on it.
 
 ## SectionsViewController
 
-We create a first UIViewController with a table view which implements the main methods of the UITableViewDelegate and UITableViewDataSource protocols (Don’t pay attention to the name of the view controller now, later it will be clear)
+When you develop any application is highly probable that you have to use more than one view controller with a table view, so you have to write a couple of table view delegate and data source repeating the same logic all the time.
 
+In our example we wanted to create a list of recipes sorted by kind of meal ("Entrada", "Plato principal", "Postre"), and when you selected one it going to show you the ingredients and how to prepare it. So we need two view controllers with tables views, one for the list of recipes and another for de recipe details. If we followed our first learnings of developing app with MVC, the methods of de UITableViewDataSource start to get verbosely, like the RecipeDetailsTableViewController:
+```javascript
+func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    if indexPath.section == 0 {
+        let cell = tableView.dequeueReusableCellWithIdentifier("IngredientCell") as! IngredientCell
+        cell.configureForIngredient(recipe.ingredients[indexPath.row])
+        return cell
+    } else {
+        let cell = tableView.dequeueReusableCellWithIdentifier("DescriptionCell") as! DescriptionCell
+        cell.configureForDescription(recipe.description)
+        return cell
+    }
+}
+```
+When you have only one type of cell it's fine, like the RecipeTableViewController
+```javascript
+func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    let section = recipes[indexPath.section]
+    let recipe = section[indexPath.row]
+    let cell = tableView.dequeueReusableCellWithIdentifier("RecipeCell") as! RecipeCell
+    cell.configureForRecipe(recipe)
+    return cell
+}
+```
+That’s why we first tried to find a way to write those delegates only once for all the table views in our project, also when you follow the DRY principle it is easier to find bugs and to scale the application.
+
+<!-- This is one iteration in many of which we are working, it is not our final approach.  _...then, why are you writing about this? can you preview a little as an introduction to what can be gained with this approach?_ -->
+
+So we create a UIViewController with a table view which implements the main methods of the UITableViewDelegate and UITableViewDataSource protocols and we called it SectionsViewController
 ```javascript
 class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
