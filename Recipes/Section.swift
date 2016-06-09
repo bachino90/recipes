@@ -27,7 +27,7 @@ extension SectionProtocol {
 class Section {
 
     weak var actionDelegate: ActionDelegate? {
-        didSet { rows.map { $0.actionDelegate = self.actionDelegate } }
+        didSet { for row in rows { row.actionDelegate = self.actionDelegate } }
     }
 
     // MARK: - Rows

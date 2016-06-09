@@ -10,7 +10,7 @@ import Foundation
 
 class RecipeSectionsViewController: SectionsViewController {
 
-    var recipes = [Recipe(name: "Empanada", ingredients: []), Recipe(name: "Pastel de carne", ingredients: [])]
+    var recipes = Data.recipes
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +25,7 @@ class RecipeSectionsViewController: SectionsViewController {
 extension RecipeSectionsViewController: RecipeActionDelegate {
 
     func actionDidRequestToOpenRecipe(recipe: Recipe) {
-        let vc = RecipeDetailsViewController(recipe: recipe)
+        let vc = RecipeDetailsSectionsViewController(recipe: recipe)
         navigationController?.pushViewController(vc, animated: true)
     }
 }

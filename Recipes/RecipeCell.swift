@@ -8,8 +8,17 @@
 
 import UIKit
 
+enum RecipeType: String {
+    case Appetizer = "Appetizer"
+    case Lunch = "Lunch"
+    case Dinner = "Dinner"
+    case Dessert = "Dessert"
+}
+
 struct Recipe {
+    var type: RecipeType
     var name: String
+    var description: String
     var ingredients: [Ingredient]
 }
 

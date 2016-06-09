@@ -10,17 +10,20 @@ import UIKit
 
 class RecipesSection: Section {
 
-    override var headerHeight: CGFloat { return RecipesHeaderCell.cellHeight() }
+    var type: RecipeType?
+
+    override var headerHeight: CGFloat { return (type != nil) ? RecipesHeaderCell.cellHeight() : 0.01 }
 
     override var headerCellIdentifier: String? { return "RecipesHeaderCell" }
 
     override func configureHeader(cell: UITableViewCell) {
         if let cell = cell as? RecipesHeaderCell {
-            cell.configureForTitle("")
+            cell.configureForType(type)
         }
     }
 
     init(recipes: [Recipe]) {
+        if recipes.count > 0 { type = recipes.first!.type }
         super.init()
         rows = recipes.map { RecipeRow(recipe: $0) }
     }
@@ -30,7 +33,7 @@ class RecipesHeaderCell: UITableViewCell {
 
     class func cellHeight() -> CGFloat { return 50.0 }
 
-    func configureForTitle(title: String) {
-        textLabel?.text = title
+    func configureForType(type: RecipeType?) {
+        textLabel?.text = type?.rawValue
     }
 }

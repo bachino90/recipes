@@ -14,9 +14,13 @@ class SectionsViewController: UIViewController, ActionDelegate, UITableViewDeleg
 
     @IBOutlet weak var tableView: UITableView!
 
+    init() { super.init(nibName: "SectionsViewController", bundle: nil) }
+
+    required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
     var sections = [Section]() {
         didSet {
-            sections.map { $0.actionDelegate = self }
+            for section in sections { section.actionDelegate = self }
             reloadData()
         }
     }

@@ -237,15 +237,3 @@ class Row {
   }
 }
 ```
----
-<!--
-StateViewController
-
-To go further with the refactor, We are going to deal with all the busness logic and the networks requests in a view model. But first se are going to think in the sectionsviewcontroller a little moré. Generally a table view controller show a list of object that you retrueve from a API, so when the view controller is loaded, you start the request and mean exile you show a loading view un tío the request finish, then maybe you apply soñé business logic to present that data y show it. It is posible that the request returns empty data or occurs some error with it
-
-In that flow we can recognize a couple of states that the view controller may have:
-
-Loading
-Success with data
-Empty
-Error -->
