@@ -8,7 +8,7 @@ It is imposible to include all type of view controller, but one of the most comm
 
 When you develop any application is highly probable that you have to use more than one view controller with a table view, so you have to write a couple of table view delegate and data source repeating the same logic all the time.
 
-In our [example](https://github.com/bachino90/recipes) we wanted to create a list of recipes sorted by kind of meal ("Entrada", "Plato principal", Dessert), and when you selected one it going to show you the ingredients and how to prepare it. So we need two view controllers with tables views, one for the list of recipes and another for de recipe details. If we followed our first learnings of developing app with MVC, the methods of de `UITableViewDataSource` start to get verbosely, like the `RecipeDetailsTableViewController`:
+In our [example](https://github.com/bachino90/recipes) we wanted to create a list of recipes sorted by kind of meal (Appetizers, Side Dishes, Dinners, Desserts), and when you selected one it going to show you the ingredients and how to prepare it. So we need two view controllers with tables views, one for the list of recipes and another for de recipe details. If we followed our first learnings of developing app with MVC, the methods of de `UITableViewDataSource` start to get verbosely, like the `RecipeDetailsTableViewController`:
 ```javascript
 func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if indexPath.section == 0 {
@@ -32,7 +32,7 @@ func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexP
     return cell
 }
 ```
-That’s why we first tried to find a way to write those delegates only once for all the table views in our project, also when you follow the DRY principle it is easier to find bugs and to scale the application.
+So we not only wanted to write only once the `delegate` and `dataSource` of the `UITableView`, we wanted to add cell easily, also when you follow the **DRY** principle it is easier to find bugs and to scale the application.
 
 So we create a `UIViewController` with a table view which implements the main methods of the `UITableViewDelegate` and `UITableViewDataSource` protocols and we called it `SectionsViewController`
 ```javascript
@@ -82,7 +82,7 @@ class Section {
 
 }
 ```
-As we can see, `Section` contains all the rows in one of its properties and the others properties and methods are use to configure the header of the section. To complete this section we need the `Row`, and that object needs to know how to configure it self.
+As we can see, `Section` contains all the rows in one of its properties and the others properties and methods are use to configure the header of the section. To complete this section we need the `Row`, and that object needs to know how to configure itself.
 ```javascript
 class Row {
 
@@ -191,7 +191,11 @@ class RecipeSectionsViewController: SectionsViewController {
     }
 }
 ```
-We just have to subclass the `SectionsViewController`, connect the `tableView` to a `UITableView` in a .xib, register the cells and set the sections you want to show.
+We just have to:
+
+1. Subclass the `SectionsViewController`,
+2. Connect the `tableView` to a `UITableView` in a .xib and
+3. Register the cells and set the sections you want to show.
 
 You can see the entire implementation of the `RecipeSection` and `RecipeRow` in the project.
 
