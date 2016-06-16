@@ -1,6 +1,6 @@
 # Going from M(massive)VC to M(minimum)VC - Part one
 
-All who start developing iOS apps begin with **MVC**, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realize the code is a mess (a lot of code with different purpose in a single file), untestable (Have you ever try to test a view controller with its lifecycle and dependencies? in the part two of the article we'll talk about this), and unscalable (Have you ever tried to add different kinds of `UITableViewCell` to an existing `UITableViewDataSource`?)
+All who start developing iOS apps begin with **MVC**, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realize the code is a mess (a lot of code with different purpose in a single file), untestable (Have you ever tried to test a view controller with its lifecycle and dependencies? in the part two of the article we'll talk about this), and unscalable (Have you ever tried to add different kinds of `UITableViewCell` to an existing `UITableViewDataSource`?)
 
 It is impossible to include all types of view controller, but one of the most common is the table view controller where you can list anything. So we are going to focus on it.
 
@@ -194,7 +194,7 @@ class RecipeSectionsViewController: SectionsViewController {
 We just have to:
 
 1. Subclass the `SectionsViewController`,
-2. Connect the `tableView` to a `UITableView` in a .xib and
+2. Connect the `tableView` to a `UITableView` in a .xib, and
 3. Register the cells and set the sections you want to show.
 
 You can see the entire implementation of the `RecipeSection` and `RecipeRow` in the project.
@@ -248,7 +248,7 @@ class SectionsViewController: UIViewController, ActionDelegate, UITableViewDeleg
     ...
 }
 ```  
-Ultimately, we have to extend your `SectionsViewController` with the method declare int the Row's protocol. In the Recipes example:
+Ultimately, we have to extend the `SectionsViewController` with the method declared in the Row's protocol. In the Recipes example:
 ```javascript
 extension RecipeSectionsViewController: RecipeActionDelegate {
     func actionDidRequestToOpenRecipe(recipe: Recipe) {
@@ -278,4 +278,4 @@ class Row {
 
 This is one iteration in many of which we are working, but it is not going to be the last one. Everyday we face new troubles and find better solutions, so as we go improving this approach we are going to release new posts.
 
-In the next part of the post we are going to talk about how to retrieve those recipes from the network. Where goes the business logic? Short answer: view model.
+In the next part of the post we are going to talk about how to retrieve those recipes from the network. Where does the business logic go? Short answer: view model.
