@@ -1,14 +1,14 @@
 # Going from M(massive)VC to M(minimum)VC - Part one
 
-All who start developing iOS apps, begins with **MVC**, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realized that code is a mess (a bunch of code with different purpose in a single file), untestable (Have you ever try to test a view controller with it lifecycle and dependencies? in the part two of the article we talk about this), and unscalable (Have you ever try to add different kinds of `UITableViewCell` to an existing `UITableViewDataSource`?)
+All who start developing iOS apps begin with **MVC**, Model View Controller. In the beginning thats fine, you get little view controllers with all the business logic and network requests inside. But when the project begins to grow, you realize the code is a mess (a lot of code with different purpose in a single file), untestable (Have you ever tried to test a view controller with its lifecycle and dependencies? in the part two of the article we'll talk about this), and unscalable (Have you ever tried to add different kinds of `UITableViewCell` to an existing `UITableViewDataSource`?)
 
-It is impossible to include all type of view controller, but one of the most common is the table view controller where you can list anything. So we are going to focus on it.
+It is impossible to include all types of view controller, but one of the most common is the table view controller where you can list anything. So we are going to focus on it.
 
 ## SectionsViewController
 
 When you develop any application is highly probable that you have to use more than one view controller with a table view, so you have to write a couple of table view delegate and data source repeating the same logic all the time.
 
-In our [example](https://github.com/bachino90/recipes) we wanted to create a list of recipes sorted by kind of meal (Appetizers, Side Dishes, Dinners, Desserts), and when you selected one it going to show you the ingredients and how to prepare it. So we need two view controllers with tables views, one for the list of recipes and another for de recipe details. If we followed our first learnings of developing app with MVC, the methods of de `UITableViewDataSource` start to get verbosely, like the `RecipeDetailsTableViewController`:
+In our [example](https://github.com/bachino90/recipes) we wanted to create a list of recipes sorted by kind of meal (Appetizers, Side Dishes, Dinners, Desserts), and when you selected one it showed you the ingredients and how to prepare it. So we need two view controllers with tables views, one for the list of recipes and another for de recipe details. If we followed our first learnings of developing apps with MVC, the `UITableViewDataSource` methods start to get verbosely, like the `RecipeDetailsTableViewController`:
 ```javascript
 func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if indexPath.section == 0 {
@@ -32,9 +32,9 @@ func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexP
     return cell
 }
 ```
-So we not only wanted to write only once the `delegate` and `dataSource` of the `UITableView`, we wanted to add cell easily, also when you follow the **DRY** principle it is easier to find bugs and to scale the application.
+So we not only want to write only once the `delegate` and `dataSource` of the `UITableView`, we want to add cells easily. Also when you follow the **DRY** principle it is easier to find bugs and to scale the application.
 
-So we create a `UIViewController` with a table view which implements the main methods of the `UITableViewDelegate` and `UITableViewDataSource` protocols and we called it `SectionsViewController`
+So we create a `UIViewController` with a table view which implements the main methods of the `UITableViewDelegate` and `UITableViewDataSource` protocols and we name it `SectionsViewController`
 ```javascript
 class SectionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -62,9 +62,9 @@ class SectionsViewController: UIViewController, UITableViewDelegate, UITableView
 
 }
 ```
-This code is not going to work but we are going to complete it in a minute.
+This code is not working but we are going to complete it in a minute.
 
-We wanted to make this view controller support all type of table view so we needed a model who represents an array of section in the table view. It also needed to have an array of objects that represents the rows of each one and its header. We called this object Section. So you can subclass the `Section` to represent different kinds of sections of row.
+We want to make this view controller support all types of table views so we need a model that represents an array of sections in the table view. It also needs to have an array of objects that represents the rows of each one and its header. We call this object **Section**. So now you can subclass the `Section` to represent different kinds of sections of rows.
 ```javascript
 class Section {
 
@@ -82,7 +82,7 @@ class Section {
 
 }
 ```
-As we can see, `Section` contains all the rows in one of its properties and the others properties and methods are use to configure the header of the section. To complete this section we need the `Row`, and that object needs to know how to configure itself.
+As we can see, `Section` contains all the rows in one of its properties and the others properties and methods are used to configure the header of the section. To complete this section we need the `Row` class, and that object needs to know how to configure itself.
 ```javascript
 class Row {
 
@@ -94,7 +94,7 @@ class Row {
 
 }
 ```
-So the class `Row` knows which cell represent it self and how to configure it.
+So, the class `Row` knows what kind of cell represents and how to configure it.
 
 Now we can complete the `UITableViewDelegate` and `UITableViewDataSource`.
 ```javascript
@@ -194,7 +194,7 @@ class RecipeSectionsViewController: SectionsViewController {
 We just have to:
 
 1. Subclass the `SectionsViewController`,
-2. Connect the `tableView` to a `UITableView` in a .xib and
+2. Connect the `tableView` to a `UITableView` in a .xib, and
 3. Register the cells and set the sections you want to show.
 
 You can see the entire implementation of the `RecipeSection` and `RecipeRow` in the project.
@@ -248,7 +248,7 @@ class SectionsViewController: UIViewController, ActionDelegate, UITableViewDeleg
     ...
 }
 ```  
-Ultimately, we have to extend your `SectionsViewController` with the method declare int the Row's protocol. In the Recipes example:
+Ultimately, we have to extend the `SectionsViewController` with the method declared in the Row's protocol. In the Recipes example:
 ```javascript
 extension RecipeSectionsViewController: RecipeActionDelegate {
     func actionDidRequestToOpenRecipe(recipe: Recipe) {
@@ -278,4 +278,4 @@ class Row {
 
 This is one iteration in many of which we are working, but it is not going to be the last one. Everyday we face new troubles and find better solutions, so as we go improving this approach we are going to release new posts.
 
-In the next part of the post we are going to talk about how to retrieve those recipes from the network. Where goes the business logic? Short answer: view model.
+In the next part of the post we are going to talk about how to retrieve those recipes from the network. Where does the business logic go? Short answer: view model.
